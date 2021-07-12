@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.special import softmax
-from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+
 
 class FairRegressionDiscret():
     def __init__(self, base_method, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5]):

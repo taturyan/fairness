@@ -1,6 +1,5 @@
 import numpy as np
-from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+
 
 class FairRegressionTransform():
     def __init__(self, base_method, split=True, sigma=1e-6):
