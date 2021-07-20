@@ -3,14 +3,32 @@ from scipy.special import softmax
 
 
 class FairRegressionDiscret():
+
     def __init__(self, base_method, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5]):
+
+        """
+        :param base_method:
+        :param beta:
+        :param L:
+        :param num_iter:
+        :param M:
+        :param weights:
+        """
+
         self.base_method = base_method
         self.beta = beta
         self.L = L
         self.num_iter = num_iter
         self.M = M
         self.weights = weights
+
     def fit(self, X_unlab):
+
+        """
+        :param X_unlab:
+        :return:
+        """
+
         coef = np.zeros(2 * self.L + 1)
         moment = np.zeros(2 * self.L + 1)
         y_pred0 = self.base_method.predict(X_unlab[X_unlab[:,-1] == -1])
@@ -29,7 +47,14 @@ class FairRegressionDiscret():
             moment = (1 - gamma) * coef + gamma * coef_prev
         self.coef_ = coef
         self.discr_ = discr
+
     def predict(self, X):
+
+        """
+        :param X:
+        :return:
+        """
+
         n_samples, _ = X.shape
         s = np.zeros(n_samples)
         s[X[:,-1] == -1] = -1
