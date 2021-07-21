@@ -7,12 +7,20 @@ class FairRegressionDiscret():
     def __init__(self, base_method, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5]):
 
         """
-        :param base_method:
-        :param beta:
-        :param L:
-        :param num_iter:
-        :param M:
-        :param weights:
+        Parameters
+        ----------
+        base_method : TYPE
+            Description
+        beta : int, optional
+            Description
+        L : int, optional
+            Description
+        num_iter : int, optional
+            Description
+        M : int, optional
+            Description
+        weights : list, optional
+            Description
         """
 
         self.base_method = base_method
@@ -23,12 +31,13 @@ class FairRegressionDiscret():
         self.weights = weights
 
     def fit(self, X_unlab):
+        """Summary
 
+        Parameters
+        ----------
+        X_unlab : TYPE
+            Description
         """
-        :param X_unlab:
-        :return:
-        """
-
         coef = np.zeros(2 * self.L + 1)
         moment = np.zeros(2 * self.L + 1)
         y_pred0 = self.base_method.predict(X_unlab[X_unlab[:,-1] == -1])
@@ -49,12 +58,18 @@ class FairRegressionDiscret():
         self.discr_ = discr
 
     def predict(self, X):
+        """Summary
 
-        """
-        :param X:
-        :return:
-        """
+        Parameters
+        ----------
+        X : TYPE
+            Description
 
+        Returns
+        -------
+        TYPE
+            Description
+        """
         n_samples, _ = X.shape
         s = np.zeros(n_samples)
         s[X[:,-1] == -1] = -1

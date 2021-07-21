@@ -3,15 +3,21 @@ import numpy as np
 class FairRegressionTransform():
 
     def __init__(self, base_method, split=True, sigma=1e-6, alpha=0, sens_index=-1):
+        """Summary
 
+        Parameters
+        ----------
+        base_method : TYPE
+            Description
+        split : bool, optional
+            Description
+        sigma : float, optional
+            Description
+        alpha : int, optional
+            Description
+        sens_index : TYPE, optional
+            Description
         """
-        :param base_method:
-        :param split:
-        :param sigma:
-        :param alpha:
-        :param sens_index:
-        """
-
         self.base_method = base_method
         self.split = split
         self.sigma = sigma
@@ -21,9 +27,12 @@ class FairRegressionTransform():
     def fit(self, X_unlab, weights):
 
         """
-        :param X_unlab:
-        :param weights:
-        :return:
+        Parameters
+        ----------
+        X_unlab : TYPE
+            Description
+        weights : TYPE
+            Description
         """
 
         self.weights = weights
@@ -49,12 +58,18 @@ class FairRegressionTransform():
             self.cdf[s] = pred2[X2[:, self.sens_index] == s]
 
     def predict(self, X):
+        """Summary
 
-        """
-        :param X:
-        :return:
-        """
+        Parameters
+        ----------
+        X : TYPE
+            Description
 
+        Returns
+        -------
+        TYPE
+            Description
+        """
         n_test, _ = X.shape
         unfair = self.base_method.predict(X) + np.random.uniform(-self.sigma, self.sigma, n_test)
         y_pred = np.zeros(n_test)
