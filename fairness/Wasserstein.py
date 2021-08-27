@@ -77,4 +77,5 @@ class FairRegressionTransform():
             q = np.sum(self.cdf[X[ind, self.sens_index]] <= pred) / len(self.cdf[X[ind, self.sens_index]])
             for s in self.sensitives:
                 y_pred[ind] += self.weights[s] * np.quantile(self.quantile[s], q, interpolation='lower')
-        return np.sqrt(self.alpha) * y_pred + (1 - np.sqrt(self.alpha)) * self.base_method.predict(X)
+        return np.sqrt(self.alpha) * self.base_method.predict(X) + (1 - np.sqrt(self.alpha)) *  y_pred
+

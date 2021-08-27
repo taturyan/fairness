@@ -4,7 +4,7 @@ from scipy.special import softmax
 
 class FairRegressionDiscret():
 
-    def __init__(self, base_method, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5]):
+    def __init__(self, base_method, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5], sens_index=-1):
 
         """
         Parameters
@@ -29,6 +29,7 @@ class FairRegressionDiscret():
         self.num_iter = num_iter
         self.M = M
         self.weights = weights
+        self.sens_index = sens_index
 
     def fit(self, X_unlab):
         """Summary
@@ -40,8 +41,8 @@ class FairRegressionDiscret():
         """
         coef = np.zeros(2 * self.L + 1)
         moment = np.zeros(2 * self.L + 1)
-        y_pred0 = self.base_method.predict(X_unlab[X_unlab[:,-1] == -1])
-        y_pred1 = self.base_method.predict(X_unlab[X_unlab[:,-1] == 1])
+        y_pred0 = self.base_method.predict(X_unlab[X_unlab[:,self.sens_index] == -1])
+        y_pred1 = self.base_method.predict(X_unlab[X_unlab[:,self.sens_index] == 1])
         discr = np.arange(-self.L, self.L + 1) * self.M / self.L
         z0 = self.weights[0] * np.square(y_pred0[:, np.newaxis] - discr)
         z1 = self.weights[1] * np.square(y_pred1[:, np.newaxis] - discr)
@@ -72,9 +73,10 @@ class FairRegressionDiscret():
         """
         n_samples, _ = X.shape
         s = np.zeros(n_samples)
-        s[X[:,-1] == -1] = -1
-        s[X[:,-1] == 1] = 1
+        s[X[:,self.sens_index] == -1] = -1
+        s[X[:,self.sens_index] == 1] = 1
         z = np.square(self.base_method.predict(X)[:, np.newaxis] - self.discr_)
-        z[X[:,-1] == -1, :] *= self.weights[0]
-        z[X[:,-1] == 1, :] *= self.weights[1]
+        z[X[:,self.sens_index] == -1, :] *= self.weights[0]
+        z[X[:,self.sens_index] == 1, :] *= self.weights[1]
+
         return (np.argmin(-s[:,np.newaxis] * self.coef_ + z, axis=1) - self.L) * self.M / self.L
