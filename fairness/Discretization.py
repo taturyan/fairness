@@ -139,9 +139,8 @@ class FairRegressionDiscret_without_sens():
             gamma = (1 - tau) / tmp
             tau = tmp
             coef_prev = coef
-            coef = moment - (self.beta / 2) * \
+            coef = moment - (self.beta / 2) *  (1-tau_X/p1) * \
                    np.mean(softmax(((1-tau_X/p1)*moment - z) /
-
                         self.beta, axis=1), axis=0)
             moment = (1 - gamma) * coef + gamma * coef_prev
         self.coef_ = coef
