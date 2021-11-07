@@ -9,7 +9,7 @@ pip install -e .
 ```
 
 ## Dependencies
-The dependencies are in the `./requirements.txt` file. 
+The dependencies are in the `requirements.txt` file. 
 They will be installed automatically during the package installation.
 
 ## Examples
