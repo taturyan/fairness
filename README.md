@@ -12,5 +12,6 @@ pip install -e .
 The dependencies are in the `./requirements.txt` file. 
 They will be installed automatically during the package installation.
 
-
+## Examples
+Examples for each method are given in the folder `examples`.
 
