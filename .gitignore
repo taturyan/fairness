@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 /fairness/Examples - wasserstein.ipynb
 /fairness/Examples - discretization.ipynb
+/fairness/Examples - problems (fixed).ipynb

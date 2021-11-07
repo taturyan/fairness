@@ -7,32 +7,37 @@ class FairRegressionTransform():
 
         Parameters
         ----------
-        base_method : TYPE
-            Description
+        base_method :
+            A regression model already trained on labeled data.
+            It must have a "predict" method, like in sklearn models.
         split : bool, optional
-            Description
+            If True, the unlabeled data must be splitted in the algorithm.
+             It is set to True by default.
         sigma : float, optional
-            Description
+            The interval of the noise added to prediction.
         alpha : int, optional
-            Description
-        sens_index : TYPE, optional
-            Description
+            Relative Improvement constraint from [0,1] range.
+            It is set to 0 by default.
+        sens_index : int, optional
+            The index of the sensitive attribute in the data.
+            It is set to -1 by default.
         """
         self.base_method = base_method
         self.split = split
         self.sigma = sigma
         self.alpha = alpha
-        self.sens_index = sens_index  # ndarray
+        self.sens_index = sens_index
 
-    def fit(self, X_unlab, weights):
+    def fit(self, X_unlab, weights = {-1 : 0.5, 1 : 0.5}):
 
         """
         Parameters
         ----------
-        X_unlab : TYPE
-            Description
-        weights : TYPE
-            Description
+        X_unlab : Array
+            An unlabeled dataset with sensitive attribute.
+        weights : dict
+             Weights of the sensitive attribute.
+             It is set to {-1 : 0.5, 1 : 0.5} by default.
         """
 
         self.weights = weights
@@ -63,12 +68,13 @@ class FairRegressionTransform():
         Parameters
         ----------
         X : TYPE
-            Description
+            (Test) Data to predict on;
+             with sensitive attribute.
 
         Returns
         -------
         TYPE
-            Description
+            Prediction on X with fairness-adjusted regression model.
         """
         n_test, _ = X.shape
         unfair = self.base_method.predict(X) + np.random.uniform(-self.sigma, self.sigma, n_test)

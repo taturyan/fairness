@@ -3,25 +3,30 @@ from scipy.special import softmax
 import collections
 
 
-class FairRegressionDiscret():
+class RegSensIn():
 
     def __init__(self, base_method, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5], sens_index=-1):
 
         """
         Parameters
         ----------
-        base_method : TYPE
-            Description
+        base_method :
+            A regression model already trained on labeled data.
+            It must have a "predict" method, like in sklearn models.
         beta : int, optional
-            Description
+            The temperature parameter used in Nesterov's algorithm.
+            It is set to 1 by default.
         L : int, optional
-            Description
+            We use 2L+1 points, to construct a uniform grid on the interval [-M, M].
         num_iter : int, optional
-            Description
+            Number of iterations in the Nesterov's algorithm
         M : int, optional
-            Description
+            Bound on the target
         weights : list, optional
-            Description
+            Proportions of each sensitive attribute in the data, respectively to -1 and 1.
+        sens_index : int, optional
+            The index of the sensitive attribute in the data.
+            It is set to -1 by default.
         """
 
         self.base_method = base_method
@@ -37,8 +42,8 @@ class FairRegressionDiscret():
 
         Parameters
         ----------
-        X_unlab : TYPE
-            Description
+        X_unlab : Array
+            An unlabeled dataset with sensitive attribute.
         """
         coef = np.zeros(2 * self.L + 1)
         moment = np.zeros(2 * self.L + 1)
@@ -64,13 +69,14 @@ class FairRegressionDiscret():
 
         Parameters
         ----------
-        X : TYPE
-            Description
+        X : Array
+            (Test) Data to predict on;
+             with sensitive attribute.
 
         Returns
         -------
-        TYPE
-            Description
+        Array
+            Prediction on X with fairness-adjusted regression model.
         """
         n_samples, _ = X.shape
         s = np.zeros(n_samples)
@@ -85,24 +91,30 @@ class FairRegressionDiscret():
 
 
 
-class FairRegressionDiscret_without_sens():
+class RegSensOut():
 
     def __init__(self, base_method, classifier, beta=1, L=20, num_iter=1000, M=10, weights=[.5, .5]):
+
         """
         Parameters
         ----------
-        base_method : TYPE
-            Description
+        base_method :
+            A regression model already trained on labeled data.
+            It must have a "predict" method, like in sklearn models.
+        classifier : TYPE
+            A classification model already trained on labeled data.
+            It must have "predict_proba" and "classes_" methods, like in sklearn models.
         beta : int, optional
-            Description
+            The temperature parameter used in Nesterov's algorithm.
+            It is set to 1 by default.
         L : int, optional
-            Description
+            We use 2L+1 points, to construct a uniform grid on the interval [-M, M].
         num_iter : int, optional
-            Description
+            Number of iterations in the Nesterov's algorithm
         M : int, optional
-            Description
+            Bound on the target
         weights : list, optional
-            Description
+            Proportions of each sensitive attribute in the data, respectively to -1 and 1.
         """
 
         self.base_method = base_method
@@ -118,8 +130,8 @@ class FairRegressionDiscret_without_sens():
 
         Parameters
         ----------
-        X_unlab : TYPE
-            Description
+        X_unlab : Array
+            An unlabeled dataset with sensitive attribute.
         """
         coef = np.zeros(2 * self.L + 1)
         moment = np.zeros(2 * self.L + 1)
@@ -139,7 +151,7 @@ class FairRegressionDiscret_without_sens():
             gamma = (1 - tau) / tmp
             tau = tmp
             coef_prev = coef
-            coef = moment - (self.beta) *  np.mean((1-tau_X/p1) * softmax(((1-tau_X/p1)*moment - z) /
+            coef = moment - (self.beta) * (p1**2)  np.mean((1-tau_X/p1) * softmax(((1-tau_X/p1)*moment - z) /
                         self.beta, axis=1), axis=0)
             moment = (1 - gamma) * coef + gamma * coef_prev
         self.coef_ = coef
@@ -151,13 +163,14 @@ class FairRegressionDiscret_without_sens():
 
         Parameters
         ----------
-        X : TYPE
-            Description
+        X : Array
+            (Test) Data to predict on;
+             with sensitive attribute.
 
         Returns
         -------
-        TYPE
-            Description
+        Array
+            Prediction on X with fairness-adjusted regression model.
         """
         n_samples, _ = X.shape
 
