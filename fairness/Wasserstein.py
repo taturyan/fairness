@@ -1,6 +1,6 @@
 import numpy as np
 
-class FairRegressionTransform():
+class WassersteinBarycenters():
 
     def __init__(self, base_method, split=True, sigma=1e-6, alpha=0, sens_index=-1):
         """Summary
