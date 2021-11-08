@@ -1,2 +1,2 @@
-from .Discretization import FairRegressionDiscret
-from .Wasserstein import FairRegressionTransform
+from .Discretization import RegSensIn, RegSensOut
+from .Wasserstein import WassersteinBarycenters
